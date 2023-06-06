@@ -28,8 +28,8 @@ public class UserService {
 		return repo.findById(id).orElseThrow();
 	}
 	
-	public void save(User user) {
-		repo.save(user);
+	public User save(User user) {
+		return repo.save(user);
 	}
 	
 	public void delete(User user) {
