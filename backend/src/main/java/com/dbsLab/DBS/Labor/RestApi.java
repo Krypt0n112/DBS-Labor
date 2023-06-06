@@ -23,6 +23,7 @@ import com.dbsLab.DBS.Labor.services.*;
 public class RestApi {
 	private UserService userService;
 	private AccountService accountService;
+	private TransactionService transactionService;
 	
 	@Autowired
 	public void setUserService(UserService service) {
@@ -32,6 +33,11 @@ public class RestApi {
 	@Autowired
 	public void setAccountService(AccountService service) {
 		this.accountService = service;
+	}
+	
+	@Autowired
+	public void setTransactionService(TransactionService service) {
+		this.transactionService = service;
 	}
 	
 	@RequestMapping("/")
@@ -127,4 +133,48 @@ public class RestApi {
 			return "Failed to delete";
 		}
 	}
+	
+	//Transaction section
+	//----------------
+	
+	@GetMapping("/transaction/all")
+	public ResponseEntity<List<Transaction>> getAllTransactions(){
+		return ResponseEntity.ok(transactionService.getAll());
+	}
+	
+	@GetMapping("/transaction/{id}")
+	public ResponseEntity<Transaction> getTransaction(@PathVariable Long id){
+		try {
+			Transaction trans = transactionService.get(id);
+			return ResponseEntity.ok(trans);
+		}catch(NoSuchElementException e) {
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	@PostMapping("/transaction/add")
+	public ResponseEntity<Transaction> setTransaction(@RequestBody Transaction trans){
+		return ResponseEntity.ok(transactionService.save(trans));
+	}
+	
+	@PutMapping("/transaction/update")
+	public ResponseEntity<Transaction> updateTransaction(@RequestBody Transaction trans){
+		try {
+			Transaction check = transactionService.get(trans.getId());
+			return ResponseEntity.ok(transactionService.save(trans));
+		}catch(NoSuchElementException e) {
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	@DeleteMapping("/transaction/delete")
+	public String deleteTransaction(@RequestBody Transaction trans) {
+		try {
+			transactionService.delete(trans);
+			return "Transaction Succesfull deleted";
+		}catch(Exception e) {
+			return "Transaction not deleted";
+		}
+	}
+	
 }
