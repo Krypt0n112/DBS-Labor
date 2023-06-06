@@ -15,17 +15,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dbsLab.DBS.Labor.models.User;
-import com.dbsLab.DBS.Labor.services.UserService;
+import com.dbsLab.DBS.Labor.models.*;
+import com.dbsLab.DBS.Labor.services.*;
 
 @Service
 @RestController
 public class RestApi {
 	private UserService userService;
+	private AccountService accountService;
 	
 	@Autowired
 	public void setUserService(UserService service) {
 		this.userService = service;
+	}
+	
+	@Autowired
+	public void setAccountService(AccountService service) {
+		this.accountService = service;
 	}
 	
 	@RequestMapping("/")
@@ -82,5 +88,43 @@ public class RestApi {
 	//account section
 	//----------------
 	
+	@GetMapping("/account/all")
+	public ResponseEntity<List<Account>> getAllAccounts(){
+		return ResponseEntity.ok(accountService.getAll());
+	}
 	
+	@GetMapping("/account/{id}")
+	public ResponseEntity<Account> getAccount(@PathVariable Long id){
+		try {
+			Account acc = accountService.get(id);
+			return ResponseEntity.ok(acc);
+		}catch(NoSuchElementException e) {
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	@PostMapping("/account/add")
+	public ResponseEntity<Account> setAccount(@RequestBody Account acc) {
+		return ResponseEntity.ok(accountService.save(acc));
+	}
+	
+	@PutMapping("/account/update")
+	public ResponseEntity<Account> updateAccount(@RequestBody Account acc){
+		try {
+			Account check = accountService.get(acc.getId());
+			return ResponseEntity.ok(accountService.save(acc));
+		}catch(NoSuchElementException e) {
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	@DeleteMapping("/account/delete")
+	public String deleteAccount(@RequestBody Account acc) {
+		try {
+			accountService.delete(acc);
+			return "Account succesfull deleted";
+		}catch(Exception e) {
+			return "Failed to delete";
+		}
+	}
 }
