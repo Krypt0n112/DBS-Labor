@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import Auth from './Auth';
+import Dashboard from './pages/main/dashboard';
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css';
@@ -26,7 +26,7 @@ import './App.css';
 const App = () =>{
     return(
       <Router>
-        <Route path="/auth" component={Auth} />
+        <Route path="/" component={Dashboard} />
       </Router>
     )
 }
